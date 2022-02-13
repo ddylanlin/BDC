@@ -1,13 +1,136 @@
-// import styledComponents from "styled-components";
 import { useState ,useEffect } from 'react'
 import styled from 'styled-components'
+import logo from './taipeilogo.png'
 
-const Select = styled.select`
-
+const Container = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
 `
 
-const Option = styled.option`
+const PageIntro = styled.div`
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 
+const Logo = styled.img`
+  width: 80%
+`
+
+const PageTitle = styled.div`
+  font-size: 20px;
+`
+
+const Section = styled.div`
+  width: 80%;
+  height: 100%;
+  background: #f4f4f4;
+  padding-top: 20px
+`
+
+const SwitchDistrict = styled.div`
+  margin-bottom: -30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+`
+
+const Select = styled.select`
+  height: 30px;
+  margin-left: 10px;
+  font-size: 18px;
+  border-radius: 3px;
+  width: 150px;
+`
+const Option = styled.option``
+
+const Chart = styled.div`
+  margin: 40px auto;
+  width: 700px;
+  height: 480px;
+  position: relative;
+`
+
+const Line = styled.div`
+  border-bottom: 3px solid #e6e6e6;
+  margin-bottom: -3px;
+  width: 100%;
+  height: 60px;
+  position: relative;
+`
+
+const Interval = styled.div`
+  color: #7b7b7b;
+  position: absolute;
+  left: -30px;
+  bottom: -5px;
+`
+
+const BarPattern = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+`
+
+const BarChart = styled.div`
+  height: 100%;
+  display: flex;
+  position: relative;
+`
+
+const BarDesc = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 20px;
+`
+
+const BarMale = styled.div`
+  background: #5e7d9c;
+  width: 50px;
+  height: ${(props) => props.amount * 3}px;
+  margin: 0 10px;
+  margin-top: -${(props) => props.amount * 3}px;
+  display: flex;
+  justify-content: center;
+`
+
+const BarFemale = styled(BarMale)`
+  background: #f36094;
+  height: ${(props) => props.amount * 3}px;
+  margin-top: -${(props) => props.amount * 3}px;
+`
+
+const Amount = styled.div`
+  margin-top: -30px;
+`
+
+const SexNoteArea = styled.div`
+  position: absolute;
+  bottom: -70px;
+  width: 150px;
+  height: 20px;
+  display: flex;
+`
+
+const Sex = styled.div`
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+`
+
+const SexColor = styled.div`
+  width: 30%;
+  background: ${(props) => props.sex ? '#5e7d9c' : '#f36094'};
+`
+
+const SexDesc = styled.div`
+  line-height: 20px
 `
 
 function App() {
@@ -66,24 +189,10 @@ function App() {
       .catch((err) => console.error(err))
   }, [])
 
-  console.log('householdData', householdData)
-  console.log('district', district)
-  
-
-  const taipeiDistricts = [
-    '臺北市松山區',
-    '臺北市信義區',
-    '臺北市大安區',
-    '臺北市中山區',
-    '臺北市中正區',
-    '臺北市大同區',
-    '臺北市萬華區',
-    '臺北市文山區',
-    '臺北市南港區',
-    '臺北市內湖區',
-    '臺北市士林區',
-    '臺北市北投區'
-  ]
+  const taipeiDistricts = []
+  householdData.map((element) => {
+    return taipeiDistricts.push(element.site_id)
+  })
 
   const handleDistrictChange = (e) => {
     let newDistrict = householdData.find((element) => {
@@ -98,21 +207,69 @@ function App() {
     })
   }
 
+
+
+  let lines = []
+  for (let i = 140; i >= 0 ; i-=20) {
+    lines.push(
+      <Line>
+        <Interval>{i}</Interval>
+      </Line>
+    )
+  }
+
   return (
-    <div>
-      <Select value={district.name} onChange={handleDistrictChange}>
-        {taipeiDistricts.map((district) => (
-          <Option key={district} value={district}>
-            {district}
-          </Option>
-        ))}
-      </Select>
-      <div>選擇的是：{district.name}</div>
-      <div>共同生活戶-男：{district.ordinary_male}</div>
-      <div>獨立生活戶-男：{district.single_male}</div>
-      <div>共同生活戶-女：{district.ordinary_female}</div>
-      <div>獨立生活戶-女：{district.single_female}</div>
-    </div>
+    <Container>
+      <PageIntro>
+        <Logo src={logo} />
+        <PageTitle>人口戶數及性別</PageTitle>
+      </PageIntro>
+      <Section>
+        <SwitchDistrict>
+          地區{' '}
+          <Select value={district.name} onChange={handleDistrictChange}>
+            {taipeiDistricts.map((district) => (
+              <Option key={district} value={district}>
+                {district}
+              </Option>
+            ))}
+          </Select>
+        </SwitchDistrict>
+        <Chart>
+          {lines}
+          <BarPattern>
+            <BarChart>
+              <BarMale amount={district.ordinary_male}>
+                <Amount>{district.ordinary_male}</Amount>
+              </BarMale>
+              <BarFemale amount={district.ordinary_female}>
+                <Amount>{district.ordinary_female}</Amount>
+              </BarFemale>
+              <BarDesc>共同生活戶</BarDesc>
+            </BarChart>
+            <BarChart>
+              <BarMale amount={district.single_male}>
+                <Amount>{district.single_male}</Amount>
+              </BarMale>
+              <BarFemale amount={district.single_female}>
+                <Amount>{district.single_female}</Amount>
+              </BarFemale>
+              <BarDesc>單一生活戶</BarDesc>
+            </BarChart>
+            <SexNoteArea>
+              <Sex>
+                <SexColor sex></SexColor>
+                <SexDesc>男</SexDesc>
+              </Sex>
+              <Sex>
+                <SexColor></SexColor>
+                <SexDesc>女</SexDesc>
+              </Sex>
+            </SexNoteArea>
+          </BarPattern>
+        </Chart>
+      </Section>
+    </Container>
   )
 }
 
