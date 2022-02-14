@@ -2,10 +2,15 @@ import { useState ,useEffect } from 'react'
 import styled from 'styled-components'
 import logo from './taipeilogo.png'
 
+const MEDIA_QUERY = '@media screen and (max-width: 768px)'
+
 const Container = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
+  ${MEDIA_QUERY} {
+    flex-direction: column;
+  }
 `
 
 const PageIntro = styled.div`
@@ -13,6 +18,11 @@ const PageIntro = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  ${MEDIA_QUERY} {
+    width: 70%;
+    margin: 0 auto;
+    margin-bottom: 30px;
+  }
 `
 
 const Logo = styled.img`
@@ -21,13 +31,17 @@ const Logo = styled.img`
 
 const PageTitle = styled.div`
   font-size: 20px;
+  text-align: center;
 `
 
 const Section = styled.div`
   width: 80%;
   height: 100%;
   background: #f4f4f4;
-  padding-top: 20px
+  padding-top: 20px;
+  ${MEDIA_QUERY} {
+    width: 100%;
+  }
 `
 
 const SwitchDistrict = styled.div`
@@ -49,7 +63,7 @@ const Option = styled.option``
 
 const Chart = styled.div`
   margin: 40px auto;
-  width: 700px;
+  width: 70%;
   height: 480px;
   position: relative;
 `
@@ -87,6 +101,9 @@ const BarDesc = styled.div`
   top: 10px;
   left: 20px;
   font-size: 20px;
+  ${MEDIA_QUERY} {
+    font-size: 14px;
+  }
 `
 
 const BarMale = styled.div`
@@ -97,6 +114,9 @@ const BarMale = styled.div`
   margin-top: -${(props) => props.amount * 3}px;
   display: flex;
   justify-content: center;
+  ${MEDIA_QUERY} {
+    width: 30px;
+  }
 `
 
 const BarFemale = styled(BarMale)`
@@ -136,13 +156,7 @@ const SexDesc = styled.div`
 function App() {
 
   const [householdData, setHouseholdData] = useState([])
-  const [district, setDistrict] = useState({
-    name: '台北市松山區',
-    ordinary_male: 0,
-    single_male: 0,
-    ordinary_female: 0,
-    single_female: 0
-  })
+  const [district, setDistrict] = useState({})
 
   useEffect(() => {
     const result = []
@@ -212,7 +226,7 @@ function App() {
   let lines = []
   for (let i = 140; i >= 0 ; i-=20) {
     lines.push(
-      <Line>
+      <Line key={i}>
         <Interval>{i}</Interval>
       </Line>
     )
@@ -222,7 +236,10 @@ function App() {
     <Container>
       <PageIntro>
         <Logo src={logo} />
-        <PageTitle>人口戶數及性別</PageTitle>
+        <PageTitle>人口戶數及性別
+          <br/>
+          for BDC test by Dylan
+        </PageTitle>
       </PageIntro>
       <Section>
         <SwitchDistrict>
