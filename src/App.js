@@ -239,6 +239,8 @@ function App() {
         <PageTitle>人口戶數及性別
           <br/>
           for BDC test by Dylan
+          <br/>
+          API source speed is not stable, please wait
         </PageTitle>
       </PageIntro>
       <Section>
